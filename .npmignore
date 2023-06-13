@@ -1,0 +1,12 @@
+node_modules
+src
+.idea
+main.ts
+index.html
+pnpm-lock.yaml
+tsconfig.json
+vite.config.ts
+.gitignore
+.npmignore
+.eslintrc.js
+.DS_Store

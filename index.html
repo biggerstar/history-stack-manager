@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>history manager</title>
+    <script type="module" src="src/test/index.ts"></script>
+    <style>
+        .space25 {
+            height: 25px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="space" style="height: 50px;width: 100%">
+    简单测试
+</div>
+<hr>
+<div class="space25"></div>
+<div style="display: flex; justify-content: space-around;flex-wrap: wrap">
+    <form>
+        <form action="/submit" method="post">
+            <div>
+                <input type="submit" value="提交">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </form>
+    <div>
+        <button onclick="history.back()">后退</button>
+        <button onclick="history.forward()">前进</button>
+    </div>
+    <div>
+        <button onclick="console.log(history)">虚拟history</button>
+        <button onclick="console.log(history.rowHistory)">真实history</button>
+    </div>
+    <div>
+        <button onclick="history.mount()">挂载</button>
+        <button onclick="history.unmount()">卸载</button>
+    </div>
+    <div>
+        <span><a href="https://www.baidu.com"> 前往百度</a></span>
+    </div>
+</div>
+<div class="space25"></div>
+<hr>
+<div class="space25"></div>
+<div id="test" style="height: 120px;width: 100%">test</div>
+<a href="#test"> 改变hash</a>
+<div id="test1" style="height: 120px;width: 100%">test1</div>
+<a href="#test1"> 改变hash1</a>
+<div id="test2" style="height: 120px;width: 100%">test2</div>
+<a href="#test2"> 改变hash2</a>
+<div id="test3" style="height: 120px;width: 100%">test3</div>
+<a href="#test3"> 改变hash3</a>
+<div style="height: 1600px;width: 100%"></div>
+
+</body>
+
+</html>
+
+
