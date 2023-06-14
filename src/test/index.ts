@@ -8,10 +8,10 @@ window.onload = ()=>{
     console.log('open new page',location.href,'\ncur history',history.history);
 }
 
-history.onBack((state)=>{
+history?.onBack((state)=>{
     console.log('onBack',state);
 })
 
-history.onForward((state)=>{
+history?.onForward((state)=>{
     console.log('onForward',state);
 })

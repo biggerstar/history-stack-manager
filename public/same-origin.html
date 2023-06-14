@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        hash {
+            display: block;
+            margin-top: 100px;
+        }
+
+    </style>
+    <script>
+        const printRowHistoryLen = () => console.log('rowHistory length', history.length) || undefined
+        window.onhashchange = () => {
+            console.log('child hashchange', printRowHistoryLen());
+
+        }
+
+        setTimeout(() => {
+            printRowHistoryLen()
+            console.log('reload');
+            // window.location.reload()
+            printRowHistoryLen()
+        }, 2000)
+
+    </script>
+</head>
+<body>
+<div>
+    <a onclick="location.reload()" href="">reload</a>
+
+    <hash>
+        <div id="same1">same1</div>
+    </hash>
+    <a href="#same1">go same1</a>
+
+    <hash>
+        <div id="same2">same2</div>
+    </hash>
+    <a href="#same2">go same2</a>
+
+    <hash>
+        <div id="same3">same3</div>
+    </hash>
+    <a href="#same3">go same3</a>
+
+    <hash>
+        <div id="same4">same4</div>
+    </hash>
+    <a href="#same4">go same4</a>
+    <hr>
+    <div>空白</div>
+    <div class="space" style="height: 1000px"></div>
+</div>
+</body>
+</html>

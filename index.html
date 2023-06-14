@@ -6,44 +6,150 @@
     <title>history manager</title>
     <script type="module" src="src/test/index.ts"></script>
     <style>
+        iframe {
+            height: 360px;
+            width: 90vw;
+        }
+
         .space25 {
             height: 25px;
             width: 100%;
         }
+
+        item-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 15px 0;
+
+        }
+
+        item {
+            border: gray 1px dotted;
+            border-radius: 5px;
+            margin: 5px 10px;
+            padding: 5px 20px;
+        }
+
+        item > * {
+            margin: 0 5px;
+        }
     </style>
+    <script>
+        setTimeout(() => {
+            const tag = document.getElementById('iframe1')
+            tag.onload = () => {
+                console.log('iframe onload ');
+            }
+            tag.onfocus = () => {
+                console.log('iframe onclick ');
+            }
+            tag.addEventListener('onload', () => {
+                console.log(111111111111111111)
+            })
+        }, 50)
+
+        window.addEventListener('popstate', (ev) => {
+            console.log('popstate', ev);
+        })
+
+        const getRealHistory = () => (history.rowHistory || history)
+        const printRowHistoryLen = () => console.log('realHistory length', getRealHistory().length);
+        window.iframeTo = function (id, url) {
+            printRowHistoryLen()
+            const iframeView = document.getElementById(id)
+            iframeView.src = url
+            printRowHistoryLen()
+        }
+
+        function changeDisplay() {
+            const tag = document.getElementById('controller')
+            const display = tag.style.display
+            console.log(display, 111111111111111111)
+            tag.style.display = display !== 'none' ? 'none' : 'block'
+        }
+
+
+        window.onhashchange = () => {
+            printRowHistoryLen()
+        }
+        window.addEventListener("", () => {
+            console.log(111111111111111111)
+        })
+        window.addEventListener('click', function (event) {
+            console.log(event.target.type);
+            if (event.button === 0) {
+                console.log('Left button clicked!');
+            }
+        });
+        window.addEventListener("click", () => {
+            const activeTag = document.activeElement
+            console.log(activeTag);
+            if (activeTag.tagName.toLowerCase() === 'iframe') {
+                console.log(222222222222222222)
+            }
+        })
+
+    </script>
 </head>
 <body>
-<div class="space" style="height: 50px;width: 100%">
+<button onclick="changeDisplay()" style="z-index:1;position: fixed;bottom: 5px;left: 5px">显示控制台</button>
+<div id="controller" style="position: fixed;bottom: 0;left: 0;width:100vw;background: rgba(10,0,0,0.1)">
+    <item-container>
+        <item>
+            <p>iframe1:</p>
+            <button onclick="iframeTo('iframe1','about:blank')">加载about:blank</button>
+            <button onclick="iframeTo('iframe1','/same-origin.html')">加载同源地址</button>
+            <button onclick="iframeTo('iframe1','https://www.bilibili.com/v/popular/all')">加载跨域地址</button>
+            <button onclick="iframeTo('iframe1','./')">加载当前页面</button>
+        </item>
+        <item>
+            <p>iframe2:</p>
+            <button onclick="iframeTo('iframe2','about:blank')">加载about:blank</button>
+            <button onclick="iframeTo('iframe2','/same-origin.html')">加载同源地址</button>
+            <button onclick="iframeTo('iframe2','https://www.bilibili.com/v/popular/all')">加载跨域地址</button>
+            <button onclick="iframeTo('iframe2','./')">加载当前页面</button>
+        </item>
+    </item-container>
+    <item-container>
+        <item>
+            <form>
+                <form action="/submit" method="post">
+                    <div>
+                        <input type="submit" value="提交">
+                        <button>Submit</button>
+                    </div>
+                </form>
+            </form>
+        </item>
+        <item>
+            <button onclick="history.back()">后退</button>
+            <button onclick="history.forward()">前进</button>
+            <button onclick="location.reload()">reload</button>
+        </item>
+
+        <item>
+            <button onclick="console.log(history)">虚拟history</button>
+            <button onclick="console.log(getRealHistory())">真实history</button>
+        </item>
+        <item>
+            <button onclick="history.mount()">挂载</button>
+            <button onclick="history.unmount()">卸载</button>
+        </item>
+        <item>
+            <span><a href="https://www.baidu.com"> 前往百度</a></span>
+        </item>
+    </item-container>
+    <hr>
+</div>
+<div class="space" style="height: 50px;width: 100%; ">
     简单测试
 </div>
 <hr>
-<div class="space25"></div>
-<div style="display: flex; justify-content: space-around;flex-wrap: wrap">
-    <form>
-        <form action="/submit" method="post">
-            <div>
-                <input type="submit" value="提交">
-                <button type="submit">Submit</button>
-            </div>
-        </form>
-    </form>
-    <div>
-        <button onclick="history.back()">后退</button>
-        <button onclick="history.forward()">前进</button>
-    </div>
-    <div>
-        <button onclick="console.log(history)">虚拟history</button>
-        <button onclick="console.log(history.rowHistory)">真实history</button>
-    </div>
-    <div>
-        <button onclick="history.mount()">挂载</button>
-        <button onclick="history.unmount()">卸载</button>
-    </div>
-    <div>
-        <span><a href="https://www.baidu.com"> 前往百度</a></span>
-    </div>
+<iframe id="iframe1"></iframe>
+<iframe id="iframe2"></iframe>
+<hr>
+<p><strong>控制台:</strong></p>
 </div>
-<div class="space25"></div>
 <hr>
 <div class="space25"></div>
 <div id="test" style="height: 120px;width: 100%">test</div>

@@ -63,15 +63,15 @@ export type HistoryOptions = {
 }
 ```
 
-
 ### History API
 
 **mount**
 
-- desc  `挂载并接管浏览器内置的history对象`
+- desc  `完全接管浏览器内置的history对象`
 - type `Function`
 - args `empty`
-- return `void`
+- return `void`   
+  虚拟历史记录管理器立即完全接管浏览器内置的history，必须挂载
 
 ```javascript
 history.mount()  // 进行接管
@@ -193,7 +193,7 @@ history.index(item.id)
 - type `Function`
 - args `[callback:(state:any):void]`
 - return `void`  
-state是pushState或replaceState方式的参数1添加进历史记录数据,默认为`null
+  state是pushState或replaceState方式的参数1添加进历史记录数据,默认为`null
 
 ```javascript
 history.onBack((state)=>{
@@ -207,7 +207,8 @@ history.onBack((state)=>{
 - type `Function`
 - args `[callback:(state:any):void]`
 - return `void`  
-state是pushState或replaceState方式的参数1添加进历史记录数据,默认为`null`
+  state是pushState或replaceState方式的参数1添加进历史记录数据,默认为`null`
+
 ```javascript
 history.onForward((state)=>{
    console.log('前进了',state)
@@ -271,21 +272,26 @@ history.push(item)
    内置管理器和虚拟管理器的操作和历史记录保持着完全同步
 
 ### 原理：
+
 不去改变内置管理器的任何api，只是通过各种浏览器操作将所有产生的新地址记录到历史栈中，
 通过创建一个虚拟的影子history管理器实时同步内置管理器的状态，并提供相关api便于管理和操作
 
 ### 内置浏览器添加历史记录的几种情况,当前已全部实现监听
+
 - 1.点击a链接
 - 2.在地址栏中输入加载URL或者打开新界面
 - 3.提交表单
 - 4.history对象的`pushState`和`replaceState`
-- 5.location对象的`replace`和`assign`  
+- 5.location对象的`replace`和`assign`
 
   唯一不完美实现:  原因是location的replace和assign不可重定义,
   assign和replace在虚拟管理器中都会添加新纪录；但是内置管理器是正常的，
   内置管理器执行assign添加一个记录，replace替换当前页记录
+
 ### 实现方式:
-注: `pathname,protocol,origin,query`等等不变 只有`hash`改变的情况，后面简称"只变hash"，相反称"非只变hash"  
+
+注: `pathname,protocol,origin,query`等等不变 只有`hash`改变的情况，后面简称"只变hash"，相反称"非只变hash"
+
 - 浏览器DOMContentLoaded事件: 非只变hash下实现了 `[1] [2] [3] [5] `
-- 浏览器hashchange事件: 只变hash下实现了 `[1] [2] [5] ` 
+- 浏览器hashchange事件: 只变hash下实现了 `[1] [2] [5] `
 - HistoryManager管理类: 实现了`[4]`
