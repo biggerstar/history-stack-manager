@@ -106,7 +106,7 @@ historyManaget.$on('forward',(state)=>{})
 使用方式:
 
 ```javascript
-同浏览器popstate事件触发条件基本一致
+//同浏览器popstate事件触发条件基本一致
 historyManaget.$on('popstate',(state)=>{})
 ```
 
@@ -316,7 +316,7 @@ history.push(item)
 简称: 可识别记录 => 可被该虚拟管理器识别的history  
 `实现了监听记录当前window中所有产生的历史记录`，支持`映射`历史记录栈和浏览器的`后退`和`前进`事件  
 1.在首次进入页面的时候记录并替换成可识别记录  
-2.通过监听`popstate`，在此基础上的所有的记录操作符合浏览器内置规则，在事件回调里面通过规则判断是否前往了新的url    
-如果有则在合适时候将其state替换成可识别记录，并在每次历史记录操作的时候同步到`sessionStorage`中(详见syncHistory文件)
+2.通过监听`popstate`，在此基础上的所有的记录操作符合浏览器内置规则，在事件回调里面通过规则判断是否前往了新的url
+  如果有则在合适时候将其state替换成可识别记录，并在每次历史记录操作的时候同步到`sessionStorage`中(详见syncHistory文件)  
 3.通过拦截`pushState`和`replaceState`的window.history操作，因为该操作不会触发`popstate`需要单独处理，拦截后也在合适时机替换成可识别记录  
 
