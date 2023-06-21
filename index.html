@@ -35,22 +35,22 @@
         }
     </style>
     <script>
-        setTimeout(() => {
-            const tag = document.getElementById('iframe1')
-            tag.onload = () => {
-                console.log('iframe onload ');
-            }
-            tag.onfocus = () => {
-                console.log('iframe onclick ');
-            }
-            tag.addEventListener('onload', () => {
-                console.log(111111111111111111)
-            })
-        }, 50)
+        // setTimeout(() => {
+        //     const tag = document.getElementById('iframe1')
+        //     tag.onload = () => {
+        //         console.log('iframe onload ');
+        //     }
+        //     tag.onfocus = () => {
+        //         console.log('iframe onclick ');
+        //     }
+        //     tag.addEventListener('onload', () => {
+        //         console.log(111111111111111111)
+        //     })
+        // }, 50)
 
-        window.addEventListener('popstate', (ev) => {
-            console.log('popstate', ev);
-        })
+        // window.addEventListener('popstate', (ev) => {
+        //     console.log('popstate', ev);
+        // })
 
         const getRealHistory = () => (history.rowHistory || history)
         const printRowHistoryLen = () => console.log('realHistory length', getRealHistory().length);
@@ -69,25 +69,25 @@
         }
 
 
-        window.onhashchange = () => {
-            printRowHistoryLen()
-        }
-        window.addEventListener("", () => {
-            console.log(111111111111111111)
-        })
-        window.addEventListener('click', function (event) {
-            console.log(event.target.type);
-            if (event.button === 0) {
-                console.log('Left button clicked!');
-            }
-        });
-        window.addEventListener("click", () => {
-            const activeTag = document.activeElement
-            console.log(activeTag);
-            if (activeTag.tagName.toLowerCase() === 'iframe') {
-                console.log(222222222222222222)
-            }
-        })
+        // window.onhashchange = () => {
+        //     printRowHistoryLen()
+        // }
+        // window.addEventListener("", () => {
+        //     console.log(111111111111111111)
+        // })
+        // window.addEventListener('click', function (event) {
+        //     console.log(event.target.type);
+        //     if (event.button === 0) {
+        //         console.log('Left button clicked!');
+        //     }
+        // });
+        // window.addEventListener("click", () => {
+        //     const activeTag = document.activeElement
+        //     console.log(activeTag);
+        //     if (activeTag.tagName.toLowerCase() === 'iframe') {
+        //         console.log(222222222222222222)
+        //     }
+        // })
 
     </script>
 </head>
@@ -128,12 +128,7 @@
         </item>
 
         <item>
-            <button onclick="console.log(history)">虚拟history</button>
-            <button onclick="console.log(getRealHistory())">真实history</button>
-        </item>
-        <item>
-            <button onclick="history.mount()">挂载</button>
-            <button onclick="history.unmount()">卸载</button>
+            <button onclick="console.log(history)">显示history</button>
         </item>
         <item>
             <span><a href="https://www.baidu.com"> 前往百度</a></span>
@@ -149,7 +144,6 @@
 <iframe id="iframe2"></iframe>
 <hr>
 <p><strong>控制台:</strong></p>
-</div>
 <hr>
 <div class="space25"></div>
 <div id="test" style="height: 120px;width: 100%">test</div>

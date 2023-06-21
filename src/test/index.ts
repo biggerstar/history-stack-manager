@@ -1,17 +1,23 @@
 import {createHistoryManager} from "../main";
 
 
-const history = createHistoryManager();
-history.mount()
+const historyManager = createHistoryManager()
+console.log(historyManager);
+historyManager.$on('back',(e)=>{
+    console.log('back',historyManager.stack);
+})
 
-window.onload = ()=>{
-    console.log('open new page',location.href,'\ncur history',history.history);
+historyManager.$on('forward',(e)=>{
+    console.log('forward',historyManager.stack);
+})
+// history.pushState(null, '', '')
+// history.replaceState(null, '', '')
+
+window['h'] = historyManager
+console.log(history);
+
+
+window.onload = () => {
+    console.log('open new page', location.href, '\ncur history');
 }
 
-history?.onBack((state)=>{
-    console.log('onBack',state);
-})
-
-history?.onForward((state)=>{
-    console.log('onForward',state);
-})

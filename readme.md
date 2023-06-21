@@ -1,8 +1,10 @@
 ### 简介
 
-原本的浏览器不支持直接查看和操作历史记录栈， 而该模块实现了浏览器记录栈的映射管理控制与功能拓展。   
-size: `3.75kb`   
-gzip:: `1.56kb`
+原本的浏览器不支持直接查看和操作历史记录栈， 而该模块实现了当前window的浏览器记录栈的映射管理控制与功能拓展。
+
+### 注意
+模块被故意设置为仅支持当前window产生的历史记录管理，  
+如果有iframe也要管理，可以重新使用createHistoryManager创建一个用于专门管理iframe产生的历史记录
 
 ### 安装
 
@@ -40,7 +42,6 @@ import {createHistoryManager} from 'history-stack-manager';
 const history = createHistoryManager()
 // 你也可以指定一个即将被接管window对象,比如iframe的window
 // const history = createHistoryManager(window)
-history.mount()
 console.log(history)
 ```
 
@@ -63,30 +64,53 @@ export type HistoryOptions = {
 }
 ```
 
+## Event API
+
+### Support New Window Event
+
+**HistoryEvent**
+
+- url  `string; 当前页面地址`
+- state `string; 当前state `
+- title `string; 标题`
+- manager `HistoryManagerImpl  虚拟管理器，同History API`
+
+使用方式:
+
+```javascript
+// 监听window.history.pushState操作
+window.addEventListener("historyPushState",()=>{})
+// 监听window.history.replaceState操作
+window.addEventListener("historyReplaceState",()=>{})
+```
+
+### Virtual History Manager Event API
+
+**back event**   
+使用方式:
+
+```javascript
+// 监听浏览器后退
+historyManaget.$on('back',(state)=>{})
+```
+
+**forward event**   
+使用方式:
+
+```javascript
+// 监听浏览器前进
+historyManaget.$on('forward',(state)=>{})
+```
+
+**popstate event**   
+使用方式:
+
+```javascript
+同浏览器popstate事件触发条件基本一致
+historyManaget.$on('popstate',(state)=>{})
+```
+
 ### History API
-
-**mount**
-
-- desc  `完全接管浏览器内置的history对象`
-- type `Function`
-- args `empty`
-- return `void`   
-  虚拟历史记录管理器立即完全接管浏览器内置的history，必须挂载
-
-```javascript
-history.mount()  // 进行接管
-```
-
-**unmount**
-
-- desc  `将控制权交还浏览器内置对象`
-- type `Function`
-- args `empty`
-- return `void`
-
-```javascript
-history.unmount()  // 交还控制权
-```
 
 **back**
 
@@ -148,13 +172,91 @@ history.pushState({state:'data'},'','url')
 history.replaceState({state:'data'},'','url') 
 ```
 
+---
+
+**length**
+
+- desc  `当前内置管理器真实历史记录的条数`
+- type `number`
+
+**scrollRestoration**
+
+- desc  `是否保持上次滚动位置`
+- type `'auto' | 'manual'`
+
+**state**
+
+- desc  `pushState 或 replaceState 添加进的state`
+- type `any`
+
+**stack**
+
+- desc  `映射当前window历史记录的后的栈数组`
+- type `Array<HistoryOptions>`
+
+**point**
+
+- desc  `当前页面在历史记录中的游标位置，最低0，最高49，和stack数组的最大值有关，默认支持记录50条 `
+- type `number`
+
+**len**
+
+- desc  `当前虚拟管理器记录的历史记录条数`
+- type `number`
+
+**history**
+
+- desc  `当前虚拟管理器正在操控的历史记录`
+- type `HistoryOptions`
+
+**$on**
+
+- desc  `事件监听`
+- type `Function`
+
+```javascript
+const cb = (state)=>{}
+historyManager.$on('back',cb)
+```
+
+**$off**
+
+- desc  `事件关闭`
+- type `Function`
+
+```javascript
+historyManager.$off('back',cb)
+```
+
+**$emit**
+
+- desc  `手动发射事件`
+- type `Function`
+
+```javascript
+historyManager.$emit('back',{a:123}})
+```
+
+**$clear**
+
+- desc  `清除所有事件`
+- type `Function`
+
+```javascript
+historyManager.$clear()
+```
+
+---
+
+#### 高级操作函数(不建议在不了解的情况在使用，正常基本不会用到)
+
 **replace**
 
 - desc  `手动替换一条虚拟管理器的历史记录`
 - type `Function`
 - args `[history:HistoryOptions]`
 - return `void`    
-  针对虚拟管理器替换记录，对内置管理器毫无影响
+  针对虚拟管理器替换记录，对内置管理器毫无影响，会破坏虚拟映射，不建议在不了解的情况使用
 
 ```javascript
 const item = history.createHistory({state:'data'},'','url')
@@ -167,7 +269,7 @@ history.replace(item)
 - type `Function`
 - args `[history:HistoryOptions]`
 - return `void`  
-  针对虚拟管理器添加记录，对内置管理器毫无影响
+  针对虚拟管理器添加记录，对内置管理器毫无影响，会破坏虚拟映射，，不建议在不了解的情况使用
 
 ```javascript
 const item = history.createHistory({state:'data'},'','url')
@@ -180,39 +282,11 @@ history.push(item)
 - type `Function`
 - args `[id:number]`
 - return `void`  
-  直接跳转到id值对应历史记录，内部使用内置管理器的go函数实现，影响虚拟管理器和内置管理器
+  直接跳转到id值对应历史记录，目的主要时修改id，不建议在不了解的情况使用
 
 ```javascript
 const item = history.stack[10]
 history.index(item.id) 
-```
-
-**onBack**
-
-- desc  `浏览器页面后退时回调，可添加多个 `
-- type `Function`
-- args `[callback:(state:any):void]`
-- return `void`  
-  state是pushState或replaceState方式的参数1添加进历史记录数据,默认为`null
-
-```javascript
-history.onBack((state)=>{
-   console.log('后退了',state)
-})) 
-```
-
-**onForward**
-
-- desc  `浏览器页面前进时回调，可添加多个 `
-- type `Function`
-- args `[callback:(state:any):void]`
-- return `void`  
-  state是pushState或replaceState方式的参数1添加进历史记录数据,默认为`null`
-
-```javascript
-history.onForward((state)=>{
-   console.log('前进了',state)
-})) 
 ```
 
 **createHistory**
@@ -228,70 +302,21 @@ const item = history.createHistory({state:'data'},'','url')
 history.push(item)
 ```
 
-**stack**
-
-- desc  `映射后的浏览器历史记录栈数组`
-- type `Array<HistoryOptions>`
-
-**point**
-
-- desc  `当前页面在历史记录中的游标位置，最低0，最高49，和stack数组的最大值有关，默认支持记录50条 `
-- type `number`
-
-**length**
-
-- desc  `当前历史记录的条数`
-- type `number`
-
-**scrollRestoration**
-
-- desc  `是否保持上次滚动位置`
-- type `'auto' | 'manual'`
-
-**history**
-
-- desc  `当前虚拟管理器正在操控的历史记录`
-- type `HistoryOptions`
-
-**state**
-
-- desc  `pushState 或 replaceState 添加进的state`
-- type `any`
-
-**rowHistory**
-
-- desc  `原本的内置浏览器历史记录管理器`
-- type `History`
+---
 
 ### 解释：
 
 1. 内置管理器: 平常使用的`window.history`对象
-2. 虚拟管理器: 该模块创建的history对象，模块实现了所有原本内置管理器的功能，通过`Object.defineProperty`
-   重新定义替代原本window.history位置，`接管原来内置history的功能和操作`，
-   内置管理器内部的历史记录栈记录着上方类型定义中的HistoryOptions类型，
-   内置管理器和虚拟管理器的操作和历史记录保持着完全同步
+2. 虚拟管理器: 该模块创建的`history`对象，模块可以直接当成离线的内置管理器使用，
+   同时提供了拓展，支持记录当前`window`页面产生的所有历史记录，提供`stack`属性作为映射
+   支持监听浏览器的前进后退操作
 
 ### 原理：
 
-不去改变内置管理器的任何api，只是通过各种浏览器操作将所有产生的新地址记录到历史栈中，
-通过创建一个虚拟的影子history管理器实时同步内置管理器的状态，并提供相关api便于管理和操作
+简称: 可识别记录 => 可被该虚拟管理器识别的history  
+`实现了监听记录当前window中所有产生的历史记录`，支持`映射`历史记录栈和浏览器的`后退`和`前进`事件  
+1.在首次进入页面的时候记录并替换成可识别记录  
+2.通过监听`popstate`，在此基础上的所有的记录操作符合浏览器内置规则，在事件回调里面通过规则判断是否前往了新的url    
+如果有则在合适时候将其state替换成可识别记录，并在每次历史记录操作的时候同步到`sessionStorage`中(详见syncHistory文件)
+3.通过拦截`pushState`和`replaceState`的window.history操作，因为该操作不会触发`popstate`需要单独处理，拦截后也在合适时机替换成可识别记录  
 
-### 内置浏览器添加历史记录的几种情况,当前已全部实现监听
-
-- 1.点击a链接
-- 2.在地址栏中输入加载URL或者打开新界面
-- 3.提交表单
-- 4.history对象的`pushState`和`replaceState`
-- 5.location对象的`replace`和`assign`
-
-  唯一不完美实现:  原因是location的replace和assign不可重定义,
-  assign和replace在虚拟管理器中都会添加新纪录；但是内置管理器是正常的，
-  内置管理器执行assign添加一个记录，replace替换当前页记录
-
-### 实现方式:
-
-注: `pathname,protocol,origin,query`等等不变 只有`hash`改变的情况，后面简称"只变hash"，相反称"非只变hash"
-
-- 浏览器DOMContentLoaded事件: 非只变hash下实现了 `[1] [2] [3] [5] `
-- 浏览器hashchange事件: 只变hash下实现了 `[1] [2] [5] `
-- HistoryManager管理类: 实现了`[4]`

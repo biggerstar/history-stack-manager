@@ -11,25 +11,28 @@
 
     </style>
     <script>
-        const printRowHistoryLen = () => console.log('rowHistory length', history.length) || undefined
-        window.onhashchange = () => {
-            console.log('child hashchange', printRowHistoryLen());
-
-        }
-
-        setTimeout(() => {
-            printRowHistoryLen()
-            console.log('reload');
-            // window.location.reload()
-            printRowHistoryLen()
-        }, 2000)
+        const printRowHistoryLen = () => console.log('rowHistory length', history.length)
+        // window.onhashchange = (ev) => {
+        //     console.log('child hashchange',ev);
+        //     printRowHistoryLen()
+        // }
+        // window.onpopstate = (ev) => {
+        //     console.log('child onpopstate',ev);
+        //     printRowHistoryLen()
+        // }
+        // setTimeout(() => {
+        //     printRowHistoryLen()
+        //     console.log('reload');
+        //     // window.location.reload()
+        //     printRowHistoryLen()
+        // }, 2000)
 
     </script>
 </head>
 <body>
 <div>
     <a onclick="location.reload()" href="">reload</a>
-
+    <span onclick="console.log(history)">history</span>
     <hash>
         <div id="same1">same1</div>
     </hash>
