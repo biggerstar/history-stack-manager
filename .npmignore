@@ -11,3 +11,4 @@ vite.config.ts
 .eslintrc.js
 .DS_Store
 public
+dist/*.html

@@ -62,19 +62,15 @@ export interface HistoryManagerImpl extends EventBusImpl {
     createHistory(state: any, title: string, url: string): HistoryOptions
 }
 
-export interface VirtualController extends HistoryManagerImpl {
-    back: Function
-    forward: Function
-    go: Function
-}
 
+export type BusEventType = 'back' | 'forward' | 'popstate'
 
 export interface EventBusImpl {
-    $on(name: string, callback: Function): void
+    $on(name: BusEventType | string, callback: Function): void
 
-    $emit(name: string, ...data: any[]): void
+    $emit(name: BusEventType | string, ...data: any[]): void
 
-    $off(name: string, callback: Function): void
+    $off(name: BusEventType | string, callback: Function): void
 
     $clear(): void
 }

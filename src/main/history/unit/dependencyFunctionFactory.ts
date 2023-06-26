@@ -16,7 +16,7 @@ export function dependencyFunctionFactory(window: Window, historyManager: Histor
         ev.after = () => {
             if (isFunction(after)) after()
             syncHistory(window, historyManager)
-            console.log('onPushState', ev)
+            // console.log('onPushState', ev)
         }
     }
 
@@ -25,7 +25,7 @@ export function dependencyFunctionFactory(window: Window, historyManager: Histor
         ev.after = () => {
             if (isFunction(after)) after()
             syncHistory(window, historyManager)
-            console.log('onReplaceState', ev)
+            // console.log('onReplaceState', ev)
         }
     }
 
